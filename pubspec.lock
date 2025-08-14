@@ -41,6 +41,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.19.1"
+  cross_file:
+    dependency: transitive
+    description:
+      name: cross_file
+      sha256: "7caf6a750a0c04effbb52a676dce9a4a592e10ad35c34d6d2d0e4811160d5670"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.4+2"
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -69,10 +77,10 @@ packages:
     dependency: "direct main"
     description:
       name: file_picker
-      sha256: "1bbf65dd997458a08b531042ec3794112a6c39c07c37ff22113d2e7e4f81d4e4"
+      sha256: ab13ae8ef5580a411c458d6207b6774a6c237d77ac37011b13994879f68a8810
       url: "https://pub.dev"
     source: hosted
-    version: "6.2.1"
+    version: "8.3.7"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -82,10 +90,10 @@ packages:
     dependency: "direct dev"
     description:
       name: flutter_lints
-      sha256: "5398f14efa795ffb7a33e9b6a08798b26a180edac4ad7db3f231e40f82ce11e1"
+      sha256: "3f41d009ba7172d5ff9be5f6e6e6abb4300e263aab8866d2a0842ed2a70f8f0c"
       url: "https://pub.dev"
     source: hosted
-    version: "5.0.0"
+    version: "4.0.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -132,10 +140,10 @@ packages:
     dependency: transitive
     description:
       name: lints
-      sha256: c35bb79562d980e9a453fc715854e1ed39e24e7d0297a880ef54e17f9874a9d7
+      sha256: "976c774dd944a42e83e2467f4cc670daef7eed6295b10b36ae8c85bcbf828235"
       url: "https://pub.dev"
     source: hosted
-    version: "5.1.1"
+    version: "4.0.0"
   matcher:
     dependency: transitive
     description:
@@ -172,10 +180,10 @@ packages:
     dependency: "direct main"
     description:
       name: path_provider
-      sha256: "3087813781ab814e4157b172f1a11c46be20179fcc9bea043e0fba36bc0acaa2"
+      sha256: "50c5dd5b6e1aaf6fb3a78b33f6aa3afca52bf903a8a5298f53101fdaee55bbcd"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.15"
+    version: "2.1.5"
   path_provider_android:
     dependency: transitive
     description:
@@ -269,14 +277,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.5.5"
-  sqflite_common_ffi:
-    dependency: "direct main"
-    description:
-      name: sqflite_common_ffi
-      sha256: "1f3ef3888d3bfbb47785cc1dda0dc7dd7ebd8c1955d32a9e8e9dae1e38d1c4c1"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.3.5"
   sqflite_darwin:
     dependency: transitive
     description:
@@ -293,14 +293,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.4.0"
-  sqlite3:
-    dependency: transitive
-    description:
-      name: sqlite3
-      sha256: "310af39c40dd0bb2058538333c9d9840a2725ae0b9f77e4fd09ad6696aa8f66e"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.7.5"
   stack_trace:
     dependency: transitive
     description:
@@ -349,14 +341,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.4"
-  typed_data:
-    dependency: transitive
-    description:
-      name: typed_data
-      sha256: f9049c039ebfeb4cf7a7104a675823cd72dba8297f264b6637062516699fa006
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.4.0"
   vector_math:
     dependency: transitive
     description:
