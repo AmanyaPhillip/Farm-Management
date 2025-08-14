@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
-import 'Database_helper.dart';
-import 'AddCowPage.dart';
+import '../../api/Database_helper.dart';
+import '../add_cow/AddCowPage.dart';
 
 class ChildrenPage extends StatefulWidget {
   final String cowId;

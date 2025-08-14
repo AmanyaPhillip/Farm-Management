@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
-import 'Database_helper.dart';
+import '../../api/Database_helper.dart';
 
 class ImportExportPage extends StatelessWidget {
   final InventoryDatabaseHelper _dbHelper = InventoryDatabaseHelper();
@@ -33,12 +33,12 @@ class ImportExportPage extends StatelessWidget {
                     // Clear existing inventory and insert new data
                     await _dbHelper.clearInventory();
                     for (var item in data) {
-                      await _dbHelper.insertCow(
+                      await _dbHelper.insertCowLegacy(
                         item['cow_id'],
                         item['alive'] == 1, // Convert integer to boolean
                         item['cow_name'],
                         item['farm'],
-                        item['additional_field'], // Add the missing argument
+                        item['breed'] ?? item['additional_field'] ?? '', // Handle both field names
                       );
                     }
 

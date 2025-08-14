@@ -1,51 +1,54 @@
 import 'package:flutter/material.dart';
-import 'Database_helper.dart'; // Import the database helper
+import '../../api/Database_helper.dart';
 
-class MilkPage extends StatefulWidget {
+class DippingPage extends StatefulWidget {
   final String cowId;
   final int role;
 
-  MilkPage({required this.cowId, required this.role});
+  DippingPage({required this.cowId, required this.role});
 
   @override
-  _MilkPageState createState() => _MilkPageState();
+  _DippingPageState createState() => _DippingPageState();
 }
 
-class _MilkPageState extends State<MilkPage> {
-  final List<Map<String, dynamic>> _milkHistory = []; // Placeholder for milk data
+class _DippingPageState extends State<DippingPage> {
+  final List<Map<String, String>> _dippingHistory = []; // Placeholder for dipping data
 
   @override
   void initState() {
     super.initState();
-    _loadMilkHistory(); // Load milk history when the page is opened
+    _loadDippingHistory(); // Load dipping history when the page is opened
   }
 
-  Future<void> _loadMilkHistory() async {
+  Future<void> _loadDippingHistory() async {
     final dbHelper = InventoryDatabaseHelper();
 
-    // Fetch the milk history from the database
-    final records = await dbHelper.getMilkRecords(widget.cowId);
+    // Fetch the dipping history from the database
+    final records = await dbHelper.getDippingRecords(widget.cowId);
 
-    // Update the local state with the milk history
+    // Update the local state with the dipping history
     setState(() {
-      _milkHistory.clear();
-      _milkHistory.addAll(records);
+      _dippingHistory.clear();
+      _dippingHistory.addAll(records.map((record) => {
+            'date': record['date'],
+            'status': record['status'],
+          }));
     });
   }
 
-  Future<void> _addMilkRecord(String cowId, String date, double liters) async {
+  Future<void> _addDippingRecord(String cowId, String date, String status) async {
     final dbHelper = InventoryDatabaseHelper();
 
-    // Insert or update the milk record in the database
-    await dbHelper.insertMilk(cowId, date, liters);
+    // Insert or update the dipping record in the database
+    await dbHelper.insertDipping(cowId, date, status);
 
-    // Reload the milk history
-    await _loadMilkHistory();
+    // Reload the dipping history
+    await _loadDippingHistory();
   }
 
-  void _showAddMilkDialog(BuildContext context) {
+  void _showAddDippingDialog(BuildContext context) {
     DateTime? selectedDate;
-    final TextEditingController litersController = TextEditingController();
+    String selectedStatus = 'Success'; // Default dropdown value
 
     showDialog(
       context: context,
@@ -53,7 +56,7 @@ class _MilkPageState extends State<MilkPage> {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              title: Text('Add Milk Record'),
+              title: Text('Add Dipping Record'),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -78,13 +81,23 @@ class _MilkPageState extends State<MilkPage> {
                     ),
                   ),
                   SizedBox(height: 16),
-                  TextField(
-                    controller: litersController,
-                    keyboardType: TextInputType.number,
+                  DropdownButtonFormField<String>(
+                    value: selectedStatus,
                     decoration: InputDecoration(
-                      labelText: 'Liters',
+                      labelText: 'Status',
                       border: OutlineInputBorder(),
                     ),
+                    items: ['Success', 'Fail', 'N/A']
+                        .map((status) => DropdownMenuItem(
+                              value: status,
+                              child: Text(status),
+                            ))
+                        .toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedStatus = value!;
+                      });
+                    },
                   ),
                 ],
               ),
@@ -95,14 +108,13 @@ class _MilkPageState extends State<MilkPage> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    if (selectedDate != null && litersController.text.isNotEmpty) {
+                    if (selectedDate != null) {
                       final date = selectedDate!.toIso8601String().split('T')[0];
-                      final liters = double.tryParse(litersController.text) ?? 0.0;
-                      _addMilkRecord(widget.cowId, date, liters);
+                      _addDippingRecord(widget.cowId, date, selectedStatus);
                       Navigator.pop(context); // Close the dialog
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Please select a date and enter liters')),
+                        SnackBar(content: Text('Please select a date')),
                       );
                     }
                   },
@@ -120,28 +132,29 @@ class _MilkPageState extends State<MilkPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Milk - ${widget.cowId}'),
+        title: Text('Dipping ${widget.cowId}'),
         backgroundColor: Colors.blue,
         actions: [
-          IconButton(
-            icon: Icon(Icons.add),
-            tooltip: 'Add Milk',
-            onPressed: () => _showAddMilkDialog(context),
-          ),
+          if (widget.role == 1) // Show the "+" button only for role 1
+            IconButton(
+              icon: Icon(Icons.add),
+              tooltip: 'Add Dipping',
+              onPressed: () => _showAddDippingDialog(context),
+            ),
         ],
       ),
-      body: _milkHistory.isEmpty
-          ? Center(child: Text('No milk records found'))
+      body: _dippingHistory.isEmpty
+          ? Center(child: Text('No dipping history found'))
           : ListView.builder(
-              itemCount: _milkHistory.length,
+              itemCount: _dippingHistory.length,
               itemBuilder: (context, index) {
-                final record = _milkHistory[index];
+                final record = _dippingHistory[index];
                 return Card(
                   elevation: 4,
                   margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                   child: ListTile(
-                    title: Text('Date: ${record['date']}'),
-                    subtitle: Text('Liters: ${record['liters']}'),
+                    title: Text('Dipping Date: ${record['date']}'),
+                    subtitle: Text('Status: ${record['status']}'),
                   ),
                 );
               },

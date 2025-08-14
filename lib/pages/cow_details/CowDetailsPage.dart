@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'Database_helper.dart'; // Import the database helper
-import 'VaccinationPage.dart'; // Import the VaccinationPage
-import 'DippingPage.dart'; // Import the DippingPage
-import 'MilkPage.dart'; // Import the MilkPage  
-import 'ChildrenPage.dart'; // Import the ChildrenPage
+import '../../api/Database_helper.dart';
+import 'VaccinationPage.dart';
+import 'DippingPage.dart';
+import 'MilkPage.dart';
+import 'ChildrenPage.dart';
 
 class CowDetailsPage extends StatefulWidget {
   final String cowName;

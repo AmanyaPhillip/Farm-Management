@@ -1,52 +1,52 @@
 import 'package:flutter/material.dart';
-import 'Database_helper.dart'; // Import the database helper
+import '../../api/Database_helper.dart';
 
-class DippingPage extends StatefulWidget {
+class VaccinationPage extends StatefulWidget {
   final String cowId;
   final int role;
 
-  DippingPage({required this.cowId, required this.role});
+  VaccinationPage({required this.cowId, required this.role});
 
   @override
-  _DippingPageState createState() => _DippingPageState();
+  _VaccinationPageState createState() => _VaccinationPageState();
 }
 
-class _DippingPageState extends State<DippingPage> {
-  final List<Map<String, String>> _dippingHistory = []; // Placeholder for dipping data
+class _VaccinationPageState extends State<VaccinationPage> {
+  final List<Map<String, String>> _vaccinationHistory = []; // Placeholder for vaccination data
 
   @override
   void initState() {
     super.initState();
-    _loadDippingHistory(); // Load dipping history when the page is opened
+    _loadVaccinationHistory(); // Load vaccination history when the page is opened
   }
 
-  Future<void> _loadDippingHistory() async {
+  Future<void> _loadVaccinationHistory() async {
     final dbHelper = InventoryDatabaseHelper();
 
-    // Fetch the dipping history from the database
-    final records = await dbHelper.getDippingRecords(widget.cowId);
+    // Fetch the vaccination history from the database
+    final records = await dbHelper.getVaccinationRecords(widget.cowId);
 
-    // Update the local state with the dipping history
+    // Update the local state with the vaccination history
     setState(() {
-      _dippingHistory.clear();
-      _dippingHistory.addAll(records.map((record) => {
+      _vaccinationHistory.clear();
+      _vaccinationHistory.addAll(records.map((record) => {
             'date': record['date'],
             'status': record['status'],
           }));
     });
   }
 
-  Future<void> _addDippingRecord(String cowId, String date, String status) async {
+  Future<void> _addVaccinationRecord(String cowId, String date, String status) async {
     final dbHelper = InventoryDatabaseHelper();
 
-    // Insert or update the dipping record in the database
-    await dbHelper.insertDipping(cowId, date, status);
+    // Insert or update the vaccination record in the database
+    await dbHelper.insertVaccination(cowId, date, status);
 
-    // Reload the dipping history
-    await _loadDippingHistory();
+    // Reload the vaccination history
+    await _loadVaccinationHistory();
   }
 
-  void _showAddDippingDialog(BuildContext context) {
+  void _showAddVaccinationDialog(BuildContext context) {
     DateTime? selectedDate;
     String selectedStatus = 'Success'; // Default dropdown value
 
@@ -56,7 +56,7 @@ class _DippingPageState extends State<DippingPage> {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              title: Text('Add Dipping Record'),
+              title: Text('Add Vaccination Record'),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -110,7 +110,7 @@ class _DippingPageState extends State<DippingPage> {
                   onPressed: () {
                     if (selectedDate != null) {
                       final date = selectedDate!.toIso8601String().split('T')[0];
-                      _addDippingRecord(widget.cowId, date, selectedStatus);
+                      _addVaccinationRecord(widget.cowId, date, selectedStatus);
                       Navigator.pop(context); // Close the dialog
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -132,28 +132,28 @@ class _DippingPageState extends State<DippingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Dipping ${widget.cowId}'),
+        title: Text('Vaccination ${widget.cowId}'),
         backgroundColor: Colors.blue,
         actions: [
           if (widget.role == 1) // Show the "+" button only for role 1
             IconButton(
               icon: Icon(Icons.add),
-              tooltip: 'Add Dipping',
-              onPressed: () => _showAddDippingDialog(context),
+              tooltip: 'Add Vaccination',
+              onPressed: () => _showAddVaccinationDialog(context),
             ),
         ],
       ),
-      body: _dippingHistory.isEmpty
-          ? Center(child: Text('No dipping history found'))
+      body: _vaccinationHistory.isEmpty
+          ? Center(child: Text('No vaccination history found'))
           : ListView.builder(
-              itemCount: _dippingHistory.length,
+              itemCount: _vaccinationHistory.length,
               itemBuilder: (context, index) {
-                final record = _dippingHistory[index];
+                final record = _vaccinationHistory[index];
                 return Card(
                   elevation: 4,
                   margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                   child: ListTile(
-                    title: Text('Dipping Date: ${record['date']}'),
+                    title: Text('Vaccination Date: ${record['date']}'),
                     subtitle: Text('Status: ${record['status']}'),
                   ),
                 );

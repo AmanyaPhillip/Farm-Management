@@ -1,55 +1,51 @@
 import 'package:flutter/material.dart';
-import 'Database_helper.dart'; // Import the database helper
+import '../../api/Database_helper.dart';
 
-class VaccinationPage extends StatefulWidget {
+class MilkPage extends StatefulWidget {
   final String cowId;
   final int role;
 
-  VaccinationPage({required this.cowId, required this.role});
+  MilkPage({required this.cowId, required this.role});
 
   @override
-  _VaccinationPageState createState() => _VaccinationPageState();
+  _MilkPageState createState() => _MilkPageState();
 }
 
-
-class _VaccinationPageState extends State<VaccinationPage> {
-  final List<Map<String, String>> _vaccinationHistory = []; // Placeholder for vaccination data
+class _MilkPageState extends State<MilkPage> {
+  final List<Map<String, dynamic>> _milkHistory = []; // Placeholder for milk data
 
   @override
   void initState() {
     super.initState();
-    _loadVaccinationHistory(); // Load vaccination history when the page is opened
+    _loadMilkHistory(); // Load milk history when the page is opened
   }
 
-  Future<void> _loadVaccinationHistory() async {
+  Future<void> _loadMilkHistory() async {
     final dbHelper = InventoryDatabaseHelper();
 
-    // Fetch the vaccination history from the database
-    final records = await dbHelper.getVaccinationRecords(widget.cowId);
+    // Fetch the milk history from the database
+    final records = await dbHelper.getMilkRecords(widget.cowId);
 
-    // Update the local state with the vaccination history
+    // Update the local state with the milk history
     setState(() {
-      _vaccinationHistory.clear();
-      _vaccinationHistory.addAll(records.map((record) => {
-            'date': record['date'],
-            'status': record['status'],
-          }));
+      _milkHistory.clear();
+      _milkHistory.addAll(records);
     });
   }
 
-  Future<void> _addVaccinationRecord(String cowId, String date, String status) async {
+  Future<void> _addMilkRecord(String cowId, String date, double liters) async {
     final dbHelper = InventoryDatabaseHelper();
 
-    // Insert or update the vaccination record in the database
-    await dbHelper.insertVaccination(cowId, date, status);
+    // Insert or update the milk record in the database
+    await dbHelper.insertMilk(cowId, date, liters);
 
-    // Reload the vaccination history
-    await _loadVaccinationHistory();
+    // Reload the milk history
+    await _loadMilkHistory();
   }
 
-  void _showAddVaccinationDialog(BuildContext context) {
+  void _showAddMilkDialog(BuildContext context) {
     DateTime? selectedDate;
-    String selectedStatus = 'Success'; // Default dropdown value
+    final TextEditingController litersController = TextEditingController();
 
     showDialog(
       context: context,
@@ -57,7 +53,7 @@ class _VaccinationPageState extends State<VaccinationPage> {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              title: Text('Add Vaccination Record'),
+              title: Text('Add Milk Record'),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -82,23 +78,13 @@ class _VaccinationPageState extends State<VaccinationPage> {
                     ),
                   ),
                   SizedBox(height: 16),
-                  DropdownButtonFormField<String>(
-                    value: selectedStatus,
+                  TextField(
+                    controller: litersController,
+                    keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                      labelText: 'Status',
+                      labelText: 'Liters',
                       border: OutlineInputBorder(),
                     ),
-                    items: ['Success', 'Fail', 'N/A']
-                        .map((status) => DropdownMenuItem(
-                              value: status,
-                              child: Text(status),
-                            ))
-                        .toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        selectedStatus = value!;
-                      });
-                    },
                   ),
                 ],
               ),
@@ -109,13 +95,14 @@ class _VaccinationPageState extends State<VaccinationPage> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    if (selectedDate != null) {
+                    if (selectedDate != null && litersController.text.isNotEmpty) {
                       final date = selectedDate!.toIso8601String().split('T')[0];
-                      _addVaccinationRecord(widget.cowId, date, selectedStatus);
+                      final liters = double.tryParse(litersController.text) ?? 0.0;
+                      _addMilkRecord(widget.cowId, date, liters);
                       Navigator.pop(context); // Close the dialog
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Please select a date')),
+                        SnackBar(content: Text('Please select a date and enter liters')),
                       );
                     }
                   },
@@ -133,29 +120,28 @@ class _VaccinationPageState extends State<VaccinationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Vaccination ${widget.cowId}'),
+        title: Text('Milk - ${widget.cowId}'),
         backgroundColor: Colors.blue,
         actions: [
-          if (widget.role == 1) // Show the "+" button only for role 1
-            IconButton(
-              icon: Icon(Icons.add),
-              tooltip: 'Add Vaccination',
-              onPressed: () => _showAddVaccinationDialog(context),
-            ),
+          IconButton(
+            icon: Icon(Icons.add),
+            tooltip: 'Add Milk',
+            onPressed: () => _showAddMilkDialog(context),
+          ),
         ],
       ),
-      body: _vaccinationHistory.isEmpty
-          ? Center(child: Text('No vaccination history found'))
+      body: _milkHistory.isEmpty
+          ? Center(child: Text('No milk records found'))
           : ListView.builder(
-              itemCount: _vaccinationHistory.length,
+              itemCount: _milkHistory.length,
               itemBuilder: (context, index) {
-                final record = _vaccinationHistory[index];
+                final record = _milkHistory[index];
                 return Card(
                   elevation: 4,
                   margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                   child: ListTile(
-                    title: Text('Vaccination Date: ${record['date']}'),
-                    subtitle: Text('Status: ${record['status']}'),
+                    title: Text('Date: ${record['date']}'),
+                    subtitle: Text('Liters: ${record['liters']}'),
                   ),
                 );
               },

@@ -1,8 +1,9 @@
-// filepath: c:\dev\Apps\maps_Example\google_maps_in_flutter\lib\database_helper.dart
+// filepath: lib/api/Database_helper.dart
 import 'dart:async';
 import 'dart:convert'; // Added for JSON encoding
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import '../models/cow_model.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
@@ -212,24 +213,50 @@ class InventoryDatabaseHelper {
     );
   }
 
-  Future<void> insertCow(String cowId, bool alive, String cowName, String farm, String breed) async {
+  // Insert cow using Cow model
+  Future<void> insertCow(Cow cow) async {
     final db = await database;
     await db.insert(
       'inventory',
-      {
-        'cow_id': cowId,
-        'alive': alive ? 1 : 0, // Convert boolean to integer (1 = true, 0 = false)
-        'cow_name': cowName,
-        'farm': farm,
-        'breed': breed,
-      },
+      cow.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
 
+  // Legacy method for backwards compatibility
+  Future<void> insertCowLegacy(String cowId, bool alive, String cowName, String farm, String breed) async {
+    final cow = Cow(
+      id: cowId,
+      isAlive: alive,
+      name: cowName,
+      farm: farm,
+      breed: breed,
+    );
+    await insertCow(cow);
+  }
+
+  // Get all cows as Cow objects
+  Future<List<Cow>> getAllCowsAsModels() async {
+    final db = await database;
+    final maps = await db.query('inventory');
+    return maps.map((map) => Cow.fromMap(map)).toList();
+  }
+
+  // Legacy method for backwards compatibility
   Future<List<Map<String, dynamic>>> getAllCows() async {
     final db = await database;
     return await db.query('inventory');
+  }
+
+  // Search cows by name or ID
+  Future<List<Cow>> searchCows(String query) async {
+    final db = await database;
+    final maps = await db.query(
+      'inventory',
+      where: 'cow_name LIKE ? OR cow_id LIKE ?',
+      whereArgs: ['%$query%', '%$query%'],
+    );
+    return maps.map((map) => Cow.fromMap(map)).toList();
   }
 
   Future<void> clearInventory() async {
