@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import '../../api/Database_helper.dart';
 
 class ImportExportPage extends StatelessWidget {
@@ -70,9 +72,79 @@ class ImportExportPage extends StatelessWidget {
     }
   }
 
-  /// Opens file picker to select export location and filename
+  /// Requests storage permission
+  Future<bool> _requestStoragePermission() async {
+    if (Platform.isAndroid) {
+      final deviceInfo = DeviceInfoPlugin();
+      final androidInfo = await deviceInfo.androidInfo;
+      if (androidInfo.version.sdkInt >= 30) {
+        // Android 11+ (API 30+) - Use MANAGE_EXTERNAL_STORAGE
+        var status = await Permission.manageExternalStorage.request();
+        return status.isGranted;
+      } else {
+        // Android 10 and below - Use WRITE_EXTERNAL_STORAGE
+        var status = await Permission.storage.request();
+        return status.isGranted;
+      }
+    }
+    return true; // iOS doesn't need explicit storage permission for app documents
+  }
+
+  /// Creates the Farm_export directory in a publicly accessible location
+  Future<Directory?> _createFarmExportDirectory() async {
+    try {
+      Directory? directory;
+      
+      if (Platform.isAndroid) {
+        // Try to get external storage directory (like Downloads or Documents)
+        directory = await getExternalStorageDirectory();
+        if (directory != null) {
+          // Create Farm_export in the external storage
+          String farmExportPath = '${directory.path}/Farm_export';
+          directory = Directory(farmExportPath);
+        } else {
+          // Fallback to app documents directory
+          directory = await getApplicationDocumentsDirectory();
+          String farmExportPath = '${directory.path}/Farm_export';
+          directory = Directory(farmExportPath);
+        }
+      } else {
+        // iOS - use documents directory
+        directory = await getApplicationDocumentsDirectory();
+        String farmExportPath = '${directory.path}/Farm_export';
+        directory = Directory(farmExportPath);
+      }
+      
+      if (!await directory.exists()) {
+        await directory.create(recursive: true);
+      }
+      
+      return directory;
+    } catch (e) {
+      print('Error creating directory: $e');
+      return null;
+    }
+  }
+
+  /// Exports data to the Farm_export folder with timestamp
   Future<void> _exportData(BuildContext context) async {
     try {
+      // Check and request permissions first
+      bool hasPermission = await _requestStoragePermission();
+      if (!hasPermission) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Storage permission required to export files'),
+            backgroundColor: Colors.red,
+            action: SnackBarAction(
+              label: 'Settings',
+              onPressed: () => openAppSettings(),
+            ),
+          ),
+        );
+        return;
+      }
+
       List<Map<String, dynamic>> items = await _dbHelper.getAllCows();
       
       if (items.isEmpty) {
@@ -85,35 +157,42 @@ class ImportExportPage extends StatelessWidget {
         return;
       }
 
-      // Generate default filename with timestamp
-      String timestamp = DateTime.now().toIso8601String().replaceAll(':', '-').split('.')[0];
-      String defaultFileName = 'inventory_export_$timestamp.json';
-
-      String? outputFile = await FilePicker.platform.saveFile(
-        dialogTitle: 'Save export file as...',
-        fileName: defaultFileName,
-        type: FileType.custom,
-        allowedExtensions: ['json'],
-      );
-
-      if (outputFile != null) {
-        String jsonContent = jsonEncode(items);
-        File file = File(outputFile);
-        await file.writeAsString(jsonContent);
-
+      // Create Farm_export directory
+      Directory? farmExportDirectory = await _createFarmExportDirectory();
+      if (farmExportDirectory == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Data exported successfully!\n${items.length} cows exported to:\n${outputFile.split('/').last}'),
+            content: Text('Failed to create export directory'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+      
+      // Generate filename with timestamp
+      String timestamp = DateTime.now().toIso8601String().replaceAll(':', '-').split('.')[0];
+      String fileName = 'inventory_export_$timestamp.json';
+      String filePath = '${farmExportDirectory.path}/$fileName';
+
+      // Export data
+      String jsonContent = jsonEncode(items);
+      File file = File(filePath);
+      await file.writeAsString(jsonContent);
+
+      // Verify file was created
+      if (await file.exists()) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Data exported successfully!\n${items.length} cows exported to:\n$filePath'),
             backgroundColor: Colors.green,
-            duration: Duration(seconds: 4),
+            duration: Duration(seconds: 5),
           ),
         );
       } else {
-        // User cancelled the save dialog
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Export cancelled'),
-            backgroundColor: Colors.grey,
+            content: Text('Export completed but file verification failed'),
+            backgroundColor: Colors.orange,
           ),
         );
       }
@@ -208,7 +287,7 @@ class ImportExportPage extends StatelessWidget {
                     ),
                     SizedBox(height: 8),
                     Text(
-                      'Export all cow data to a location of your choice',
+                      'Export all cow data to Farm_export folder with timestamp',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 14,
@@ -261,7 +340,7 @@ class ImportExportPage extends StatelessWidget {
                     ),
                     SizedBox(height: 4),
                     Text(
-                      '• Export: Choose where to save your data and set the filename',
+                      '• Export: Automatically saves to Documents/Farm_export/ with timestamp',
                       style: TextStyle(fontSize: 12),
                     ),
                     SizedBox(height: 4),
