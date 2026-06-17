@@ -82,11 +82,11 @@ lib/
 
 ## Roadmap
 
-Planned releases and upcoming features are tracked in [RELEASE_SCHEDULE.md](RELEASE_SCHEDULE.md).
+Planned releases and upcoming features.
 
 | Version | Theme | Target |
 |---|---|---|
-| v1.0.0 | Initial release — core cattle registration | Jul 14, 2026 |
+| v1.0.0 | Security, Architecture, and Code Quality.| Jul 14, 2026 |
 | v1.1.0 | Search, filter, UX polish | Sep 8, 2026 |
 | v1.2.0 | Health log, weight tracking, vet records | Nov 3, 2026 |
 
