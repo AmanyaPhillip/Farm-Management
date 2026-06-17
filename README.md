@@ -2,7 +2,6 @@
 
 ![Flutter](https://img.shields.io/badge/Flutter-3.x-02569B?logo=flutter&logoColor=white)
 ![Dart](https://img.shields.io/badge/Dart-3.x-0175C2?logo=dart&logoColor=white)
-![Platform](https://img.shields.io/badge/platform-Android%20%7C%20iOS%20%7C%20Web-brightgreen)
 ![License](https://img.shields.io/badge/license-Apache--2.0-blue)
 
 A cross-platform Flutter app for managing livestock on a farm. Register and track cattle records, keep everything stored locally on-device, and import or export your data whenever you need it — no internet connection required.
