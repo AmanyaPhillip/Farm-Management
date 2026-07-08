@@ -1,6 +1,6 @@
-name: google_maps_in_flutter
-description: "A new Flutter project."
-publish_to: 'none' 
+name: farm_management
+description: "Cross-platform Flutter app for registering and tracking livestock records offline."
+publish_to: 'none'
 version: 1.0.0+1
 
 environment:
