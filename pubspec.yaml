@@ -1,7 +1,7 @@
 name: farm_management
 description: "Cross-platform Flutter app for registering and tracking livestock records offline."
 publish_to: 'none'
-version: 1.0.0+1
+version: 1.0.0+2
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -17,6 +17,7 @@ dependencies:
   file_saver: ^0.2.12
   permission_handler: ^11.3.1
   device_info_plus: ^9.1.0
+  sqflite_common_ffi: ^2.4.5
 
 dev_dependencies:
   flutter_test:
