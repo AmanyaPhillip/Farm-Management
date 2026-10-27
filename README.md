@@ -14,7 +14,7 @@ JSON whenever you need it. No internet connection required.
  
 ## Screenshots
  
-> _Coming in v1.0.0 — Android, iOS, and Web builds._
+
  
 ---
  
@@ -32,10 +32,9 @@ JSON whenever you need it. No internet connection required.
   `Farm_export/` folder; import from any JSON file (this **replaces** existing data).
 - **Local-first storage** — all records kept in on-device SQLite databases; works
   fully offline.
-- **Cross-platform** — single codebase targets Android, iOS, and the web.
-> **Note (pre-1.0):** Authentication currently uses hardcoded, plaintext seeded
+- **Cross-platform** — single codebase targets Android, iOS, Windows and the web With Installable releases(except iOS).
 > credentials and is not production-ready. See the Roadmap — security hardening is
-> the v1.0.0 theme.
+> the v1.1.0 theme.
  
 ---
  
