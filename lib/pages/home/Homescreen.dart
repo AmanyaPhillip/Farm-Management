@@ -64,8 +64,7 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
         _filteredCows = _allCows.where((cow) {
           return cow.name.toLowerCase().contains(query) ||
                  cow.id.toLowerCase().contains(query) ||
-                 cow.breed.toLowerCase().contains(query) ||
-                 cow.farm.toLowerCase().contains(query);
+                 cow.breed.toLowerCase().contains(query) ;
         }).toList();
       }
     });
@@ -92,7 +91,6 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
         builder: (context) => CowDetailsPage(
           cowName: cow.name,
           cowId: cow.id,
-          farm: cow.farm,
           cowBreed: cow.breed,
           role: widget.role,
         ),
@@ -152,17 +150,6 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
                     SizedBox(height: 2),
                     Row(
                       children: [
-                        Icon(Icons.location_on, size: 14, color: Colors.grey[500]),
-                        SizedBox(width: 4),
-                        Text(
-                          cow.farm,
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey[500],
-                          ),
-                        ),
-                        SizedBox(width: 16),
-                        Icon(Icons.category, size: 14, color: Colors.grey[500]),
                         SizedBox(width: 4),
                         Text(
                           cow.breed,
@@ -253,7 +240,7 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
                   child: TextField(
                     controller: _searchController,
                     decoration: InputDecoration(
-                      hintText: 'Search by name, ID, breed, or farm...',
+                      hintText: 'Search by name, ID or breed...',
                       prefixIcon: Icon(Icons.search, color: Colors.blue),
                       suffixIcon: _searchController.text.isNotEmpty
                           ? IconButton(

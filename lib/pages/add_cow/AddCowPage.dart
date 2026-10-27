@@ -11,8 +11,8 @@ class AddCowPage extends StatefulWidget {
 class _AddCowPageState extends State<AddCowPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _cowNameController = TextEditingController();
-  final TextEditingController _breedController = TextEditingController();
-  String _selectedFarm = 'Mubende'; // Default value for the dropdown
+  final TextEditingController _breedController =
+    TextEditingController(text: 'Holstein Friesian');
   bool _isAlive = true; // Default value for "Alive"
 
   Future<String> _generateCowId() async {
@@ -51,7 +51,6 @@ class _AddCowPageState extends State<AddCowPage> {
           id: cowId,
           isAlive: _isAlive,
           name: _cowNameController.text.trim(),
-          farm: _selectedFarm,
           breed: _breedController.text.trim(),
         );
 
@@ -82,7 +81,7 @@ class _AddCowPageState extends State<AddCowPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Cow'),
+        title: const Text('Add Cow'),
         backgroundColor: Colors.blue,
       ),
       body: Form(
@@ -99,7 +98,7 @@ class _AddCowPageState extends State<AddCowPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         'Cow Information',
                         style: TextStyle(
                           fontSize: 18,
@@ -107,10 +106,10 @@ class _AddCowPageState extends State<AddCowPage> {
                           color: Colors.blue,
                         ),
                       ),
-                      SizedBox(height: 16),
+                      const SizedBox(height: 16),
                       TextFormField(
                         controller: _cowNameController,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: 'Cow Name *',
                           border: OutlineInputBorder(),
                           prefixIcon: Icon(Icons.pets),
@@ -118,10 +117,10 @@ class _AddCowPageState extends State<AddCowPage> {
                         validator: (value) => _validateRequired(value, 'Cow Name'),
                         textCapitalization: TextCapitalization.words,
                       ),
-                      SizedBox(height: 16),
+                      const SizedBox(height: 16),
                       TextFormField(
                         controller: _breedController,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: 'Breed *',
                           border: OutlineInputBorder(),
                           prefixIcon: Icon(Icons.category),
@@ -129,27 +128,8 @@ class _AddCowPageState extends State<AddCowPage> {
                         validator: (value) => _validateRequired(value, 'Breed'),
                         textCapitalization: TextCapitalization.words,
                       ),
-                      SizedBox(height: 16),
-                      DropdownButtonFormField<String>(
-                        value: _selectedFarm,
-                        decoration: InputDecoration(
-                          labelText: 'Farm Name',
-                          border: OutlineInputBorder(),
-                          prefixIcon: Icon(Icons.location_on),
-                        ),
-                        items: ['Mubende', 'Ibanda']
-                            .map((farm) => DropdownMenuItem(
-                                  value: farm,
-                                  child: Text(farm),
-                                ))
-                            .toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedFarm = value!;
-                          });
-                        },
-                      ),
-                      SizedBox(height: 16),
+                      
+                      const SizedBox(height: 16),
                       Card(
                         color: Colors.grey[50],
                         child: Padding(
@@ -159,11 +139,11 @@ class _AddCowPageState extends State<AddCowPage> {
                             children: [
                               Row(
                                 children: [
-                                  Icon(Icons.health_and_safety, color: Colors.green),
-                                  SizedBox(width: 8),
+                                  const Icon(Icons.health_and_safety, color: Colors.green),
+                                  const SizedBox(width: 8),
                                   Text(
                                     'Status: ${_isAlive ? "Alive" : "Deceased"}',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w500,
                                     ),

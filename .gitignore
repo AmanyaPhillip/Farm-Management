@@ -18,10 +18,14 @@ migrate_working_dir/
 *.iws
 .idea/
 
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
+# VS Code settings
+.vscode/
+
+# Local SQLite databases/exports created during testing
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
 
 # Flutter/Dart/Pub related
 **/doc/api/

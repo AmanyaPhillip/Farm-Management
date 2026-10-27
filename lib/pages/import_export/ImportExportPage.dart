@@ -34,7 +34,6 @@ class ImportExportPage extends StatelessWidget {
               item['cow_id'],
               item['alive'] == 1, // Convert integer to boolean
               item['cow_name'],
-              item['farm'],
               item['breed'] ?? item['additional_field'] ?? '', // Handle both field names
             );
           }

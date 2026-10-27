@@ -5,9 +5,9 @@
     
 
     <application
-        android:label="google_maps_in_flutter"
+        android:label="FarMan"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:exported="true"
