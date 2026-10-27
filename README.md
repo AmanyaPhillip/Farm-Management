@@ -1,6 +1,4 @@
 # FarMan
-## [NOT UP TO DATE ATALL!]
- 
 ![Flutter](https://img.shields.io/badge/Flutter-3.x-02569B?logo=flutter&logoColor=white)
 ![Dart](https://img.shields.io/badge/Dart-3.x-0175C2?logo=dart&logoColor=white)
 ![License](https://img.shields.io/badge/license-Apache--2.0-blue)
@@ -50,31 +48,9 @@ JSON whenever you need it. No internet connection required.
 ---
  
 ## Getting Started
- 
-### Prerequisites
- 
-- [Flutter SDK](https://docs.flutter.dev/get-started/install) installed and on your `PATH`
-- One of: an Android/iOS device or emulator, or Chrome (for web)
-Check your setup:
- 
-```bash
-flutter doctor
-```
- 
-### Run
- 
-```bash
-flutter pub get
-flutter run
-```
- 
-### Default login credentials (seeded, dev only)
- 
-| Username | Password | Role |
-|---|---|---|
-| `Admin` | `admin` | Admin (1) |
-| `phill` | `phil1` | Regular user (2) |
- 
+### Installation:
+Get the Latest release for your device: [Download](https://github.com/Mahir29Flame/FarMan/releases/tag/v1.1.0)
+
 ### Build a Release
  
 ```bash
@@ -87,13 +63,7 @@ flutter build ios          # iOS — requires a macOS machine with Xcode
  
 ## Data Model
  
-The app uses two on-device SQLite databases.
- 
-**`user_database.db`**
- 
-| Table | Purpose |
-|---|---|
-| `users` | Username, password, and role (1 = admin, 2 = regular). |
+The app uses on-device SQLite databases.
  
 **`inventory_database.db`** (schema version 7)
  
@@ -107,7 +77,7 @@ The app uses two on-device SQLite databases.
  
 ---
  
-## Project Structure
+## Project Structure [NOT Up-to-date]
  
 ```
 lib/
@@ -137,24 +107,8 @@ lib/
  
 ## Known Limitations (pre-1.0)
  
-- Passwords are stored and compared in **plaintext**, with hardcoded seeded users.
+- No Auth.
 - The "Money" tab on the home screen is a placeholder ("coming soon").
-- Farm names in the Add-Cow form are hardcoded (`Mubende`, `Ibanda`).
 - Import **overwrites** all existing inventory without a confirmation/merge step.
-- Minimal automated test coverage.
+- Family-Tree connection does not work
 ---
- 
-## Roadmap
- 
-Planned releases and upcoming features.
- 
-| Version | Theme | Target |
-|---|---|---|
-| v1.0.0 | Security, architecture, and code quality | Jul 14, 2026 |
-| v1.1.0 | Search, filter, UX polish | Sep 8, 2026 |
-| v1.2.0 | Health log, weight tracking, vet records | Nov 3, 2026 |
- 
----
- 
-## License
- 
