@@ -102,7 +102,8 @@ class InventoryDatabaseHelper {
             cow_id TEXT PRIMARY KEY,
             alive INTEGER NOT NULL,
             cow_name TEXT NOT NULL,
-            breed TEXT NOT NULL
+            breed TEXT NOT NULL,
+            isFemale INTEGER NOT NULL
           )
         ''');
 
