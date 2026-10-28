@@ -33,6 +33,7 @@ class ImportExportPage extends StatelessWidget {
             await _dbHelper.insertCowLegacy(
               item['cow_id'],
               item['alive'] == 1, // Convert integer to boolean
+              item['isFemale'] == 1, // Convert integer to boolean
               item['cow_name'],
               item['breed'] ?? item['additional_field'] ?? '', // Handle both field names
             );

@@ -168,10 +168,11 @@ class InventoryDatabaseHelper {
   }
 
   // Legacy method for backwards compatibility
-  Future<void> insertCowLegacy(String cowId, bool alive, String cowName, String breed) async {
+  Future<void> insertCowLegacy(String cowId, bool alive, bool isFemale,  String cowName, String breed) async {
     final cow = Cow(
       id: cowId,
       isAlive: alive,
+      isFemale: isFemale,
       name: cowName,
       breed: breed,
     );

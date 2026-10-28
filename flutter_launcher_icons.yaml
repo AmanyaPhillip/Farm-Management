@@ -1,0 +1,25 @@
+# Default launcher icon set (built from assets/icon/Light.png).
+#
+#   dart run flutter_launcher_icons                  # this file
+#   .\scripts\icons.ps1 light                        # same thing
+#
+# For the dark artwork (assets/icon/Dark.png) use:
+#   dart run flutter_launcher_icons -f flutter_launcher_icons_dark.yaml
+#   .\scripts\icons.ps1 dark
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon/Light.png"
+  min_sdk_android: 21
+
+  # iOS 18+ can show a different icon in dark mode. Uncomment and point it at
+  # the artwork that reads well on a dark background (white/light art).
+  # image_path_ios_dark_transparent: "assets/icon/Light.png"
+
+  web:
+    generate: true
+    image_path: "assets/icon/Light.png"
+  windows:
+    generate: true
+    image_path: "assets/icon/Light.png"
+    icon_size: 48 # min:48, max:256, default: 48

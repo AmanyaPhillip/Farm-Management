@@ -3,12 +3,14 @@ class Cow {
   final bool isAlive;
   final String name;
   final String breed;
+  final bool isFemale;
 
   Cow({
     required this.id,
     required this.isAlive,
     required this.name,
     required this.breed,
+    required this.isFemale
   });
 
   // Convert Cow object to Map for database insertion
@@ -18,6 +20,7 @@ class Cow {
       'alive': isAlive ? 1 : 0,
       'cow_name': name,
       'breed': breed,
+      'isFemale': isFemale ? 1 : 0,
     };
   }
 
@@ -28,6 +31,7 @@ class Cow {
       isAlive: (map['alive'] ?? 0) == 1,
       name: map['cow_name'] ?? '',
       breed: map['breed'] ?? '',
+      isFemale: (map['isFemale'] ?? 0) == 1,
     );
   }
 
@@ -43,12 +47,13 @@ class Cow {
       isAlive: isAlive ?? this.isAlive,
       name: name ?? this.name,
       breed: breed ?? this.breed,
+      isFemale: isFemale ?? this.isFemale,
     );
   }
 
   @override
   String toString() {
-    return 'Cow{id: $id, isAlive: $isAlive, name: $name, breed: $breed}';
+    return 'Cow{id: $id, isAlive: $isAlive, name: $name, breed: $breed, isFemale: $isFemale}';
   }
 
   @override

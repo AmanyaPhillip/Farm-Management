@@ -32,7 +32,6 @@ JSON whenever you need it. No internet connection required.
   fully offline.
 - **Cross-platform** — single codebase targets Android, iOS, Windows and the web With Installable releases(except iOS).
 > credentials and is not production-ready. See the Roadmap — security hardening is
-> the v1.1.0 theme.
  
 ---
  
@@ -99,9 +98,6 @@ lib/
    └─ import_export/
       └─ ImportExportPage.dart        # JSON import/export with storage permissions
 ```
- 
-> Note: the Flutter project is currently named `google_maps_in_flutter` in
-> `pubspec.yaml` (a leftover from a template) — see Roadmap.
  
 ---
  
