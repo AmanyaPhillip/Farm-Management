@@ -31,7 +31,6 @@ JSON whenever you need it. No internet connection required.
 - **Local-first storage** — all records kept in on-device SQLite databases; works
   fully offline.
 - **Cross-platform** — single codebase targets Android, iOS, Windows and the web With Installable releases(except iOS).
-> credentials and is not production-ready. See the Roadmap — security hardening is
  
 ---
  
