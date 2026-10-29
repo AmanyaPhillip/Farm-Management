@@ -1,52 +1,52 @@
 import 'package:flutter/material.dart';
 import '../../api/Database_helper.dart';
 
-class DippingPage extends StatefulWidget {
+class InseminationPage extends StatefulWidget {
   final String cowId;
   final int role;
 
-  DippingPage({required this.cowId, required this.role});
+  InseminationPage({required this.cowId, required this.role});
 
   @override
-  _DippingPageState createState() => _DippingPageState();
+  _InseminationPageState createState() => _InseminationPageState();
 }
 
-class _DippingPageState extends State<DippingPage> {
-  final List<Map<String, String>> _dippingHistory = []; // Placeholder for dipping data
+class _InseminationPageState extends State<InseminationPage> {
+  final List<Map<String, String>> _inseminationHistory = []; // Placeholder for insemination data
 
   @override
   void initState() {
     super.initState();
-    _loadDippingHistory(); // Load dipping history when the page is opened
+    _loadInseminationHistory(); // Load insemination history when the page is opened
   }
 
-  Future<void> _loadDippingHistory() async {
+  Future<void> _loadInseminationHistory() async {
     final dbHelper = InventoryDatabaseHelper();
 
-    // Fetch the dipping history from the database
-    final records = await dbHelper.getDippingRecords(widget.cowId);
+    // Fetch the insemination history from the database
+    final records = await dbHelper.getInseminationRecords(widget.cowId);
 
-    // Update the local state with the dipping history
+    // Update the local state with the insemination history
     setState(() {
-      _dippingHistory.clear();
-      _dippingHistory.addAll(records.map((record) => {
+      _inseminationHistory.clear();
+      _inseminationHistory.addAll(records.map((record) => {
             'date': record['date'],
             'status': record['status'],
           }));
     });
   }
 
-  Future<void> _addDippingRecord(String cowId, String date, String status) async {
+  Future<void> _addInseminationRecord(String cowId, String date, String status) async {
     final dbHelper = InventoryDatabaseHelper();
 
-    // Insert or update the dipping record in the database
-    await dbHelper.insertDipping(cowId, date, status);
+    // Insert or update the insemination record in the database
+    await dbHelper.insertInsemination(cowId, date, status);
 
-    // Reload the dipping history
-    await _loadDippingHistory();
+    // Reload the insemination history
+    await _loadInseminationHistory();
   }
 
-  void _showAddDippingDialog(BuildContext context) {
+  void _showAddInseminationDialog(BuildContext context) {
     DateTime? selectedDate;
     String selectedStatus = 'Success'; // Default dropdown value
 
@@ -56,7 +56,7 @@ class _DippingPageState extends State<DippingPage> {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              title: Text('Add Dipping Record'),
+              title: const Text('Add Insemination Record'),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -80,10 +80,10 @@ class _DippingPageState extends State<DippingPage> {
                           : 'Selected: ${selectedDate!.toIso8601String().split('T')[0]}',
                     ),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   DropdownButtonFormField<String>(
-                    value: selectedStatus,
-                    decoration: InputDecoration(
+                    initialValue: selectedStatus,
+                    decoration: const InputDecoration(
                       labelText: 'Status',
                       border: OutlineInputBorder(),
                     ),
@@ -104,21 +104,21 @@ class _DippingPageState extends State<DippingPage> {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context), // Close the dialog
-                  child: Text('Cancel'),
+                  child: const Text('Cancel'),
                 ),
                 ElevatedButton(
                   onPressed: () {
                     if (selectedDate != null) {
                       final date = selectedDate!.toIso8601String().split('T')[0];
-                      _addDippingRecord(widget.cowId, date, selectedStatus);
+                      _addInseminationRecord(widget.cowId, date, selectedStatus);
                       Navigator.pop(context); // Close the dialog
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Please select a date')),
+                        const SnackBar(content: const Text('Please select a date')),
                       );
                     }
                   },
-                  child: Text('Save'),
+                  child: const Text('Save'),
                 ),
               ],
             );
@@ -132,28 +132,28 @@ class _DippingPageState extends State<DippingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Dipping ${widget.cowId}'),
+        title: Text('Insemination ${widget.cowId}'),
         backgroundColor: Colors.blue,
         actions: [
           if (widget.role == 1) // Show the "+" button only for role 1
             IconButton(
-              icon: Icon(Icons.add),
-              tooltip: 'Add Dipping',
-              onPressed: () => _showAddDippingDialog(context),
+              icon: const Icon(Icons.add),
+              tooltip: 'Add Insemination',
+              onPressed: () => _showAddInseminationDialog(context),
             ),
         ],
       ),
-      body: _dippingHistory.isEmpty
-          ? Center(child: Text('No dipping history found'))
+      body: _inseminationHistory.isEmpty
+          ? const Center(child: const Text('No Insemination history found'))
           : ListView.builder(
-              itemCount: _dippingHistory.length,
+              itemCount: _inseminationHistory.length,
               itemBuilder: (context, index) {
-                final record = _dippingHistory[index];
+                final record = _inseminationHistory[index];
                 return Card(
                   elevation: 4,
                   margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                   child: ListTile(
-                    title: Text('Dipping Date: ${record['date']}'),
+                    title: Text('Insemination Date: ${record['date']}'),
                     subtitle: Text('Status: ${record['status']}'),
                   ),
                 );

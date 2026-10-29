@@ -1,7 +1,14 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'auth/LoginPage.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'pages/home/Homescreen.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
+  }
   runApp(const MyApp());
 }
 
@@ -11,12 +18,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Farm Management',
+      title: 'FarMan',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: LoginPage(),
+      home: MyHomeScreen(role: 1),
       debugShowCheckedModeBanner: false,
     );
   }

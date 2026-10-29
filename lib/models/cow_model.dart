@@ -2,16 +2,18 @@ class Cow {
   final String id;
   final bool isAlive;
   final String name;
-  final String farm;
   final String breed;
+  final bool isFemale;
 
   Cow({
     required this.id,
     required this.isAlive,
     required this.name,
-    required this.farm,
     required this.breed,
+    required this.isFemale,
   });
+
+  String get gender => isFemale ? 'Female' : 'Male';
 
   // Convert Cow object to Map for database insertion
   Map<String, dynamic> toMap() {
@@ -19,19 +21,30 @@ class Cow {
       'cow_id': id,
       'alive': isAlive ? 1 : 0,
       'cow_name': name,
-      'farm': farm,
       'breed': breed,
+      'isFemale': isFemale ? 1 : 0,
     };
   }
 
   // Create Cow object from Map (database retrieval)
   factory Cow.fromMap(Map<String, dynamic> map) {
+    bool female = false;
+    if (map.containsKey('isFemale')) {
+      female = (map['isFemale'] ?? 0) == 1;
+    } else if (map.containsKey('gender')) {
+      final g = map['gender'];
+      if (g is String) {
+        female = g.toLowerCase() == 'female';
+      } else if (g is int) {
+        female = g == 1;
+      }
+    }
     return Cow(
       id: map['cow_id'] ?? '',
       isAlive: (map['alive'] ?? 0) == 1,
       name: map['cow_name'] ?? '',
-      farm: map['farm'] ?? '',
       breed: map['breed'] ?? '',
+      isFemale: female,
     );
   }
 
@@ -40,21 +53,21 @@ class Cow {
     String? id,
     bool? isAlive,
     String? name,
-    String? farm,
     String? breed,
+    bool? isFemale,
   }) {
     return Cow(
       id: id ?? this.id,
       isAlive: isAlive ?? this.isAlive,
       name: name ?? this.name,
-      farm: farm ?? this.farm,
       breed: breed ?? this.breed,
+      isFemale: isFemale ?? this.isFemale,
     );
   }
 
   @override
   String toString() {
-    return 'Cow{id: $id, isAlive: $isAlive, name: $name, farm: $farm, breed: $breed}';
+    return 'Cow{id: $id, isAlive: $isAlive, name: $name, breed: $breed, Gender: $gender}';
   }
 
   @override

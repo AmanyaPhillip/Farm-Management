@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import '../../api/Database_helper.dart';
 import 'VaccinationPage.dart';
-import 'DippingPage.dart';
+import 'InseminationPage.dart';
 import 'MilkPage.dart';
 import 'ChildrenPage.dart';
 
 class CowDetailsPage extends StatefulWidget {
   final String cowName;
   final String cowId;
-  final String farm;
   final String cowBreed;
+  final String cowGender;
   final int role; // Add role to check user permissions
 
   CowDetailsPage({
     required this.cowName,
     required this.cowId,
-    required this.farm,
     required this.cowBreed,
+    required this.cowGender,
     required this.role,
   });
 
@@ -28,7 +28,7 @@ class _CowDetailsPageState extends State<CowDetailsPage> {
   final InventoryDatabaseHelper _dbHelper = InventoryDatabaseHelper();
   Map<String, dynamic>? _cowDetails;
   String? latestVaccinationDate;
-  String? latestDippingDate;
+  String? latestInseminationDate;
   double totalMilkLiters = 0.0; // Initialize totalMilkLiters
 
   @override
@@ -41,9 +41,8 @@ class _CowDetailsPageState extends State<CowDetailsPage> {
     try {
       final cows = await _dbHelper.getAllCows();
       final cow = cows.firstWhere((c) => c['cow_id'] == widget.cowId, orElse: () => {});
-
       String? latestVaccinationDate;
-      String? latestDippingDate;
+      String? latestInseminationDate;
       double totalMilkLiters = 0.0;
       String? parent1;
       String? parent2;
@@ -61,12 +60,12 @@ class _CowDetailsPageState extends State<CowDetailsPage> {
               .split('T')[0]; // Format as YYYY-MM-DD
         }
 
-        // Fetch dipping records for the cow
-        final dippingRecords = await _dbHelper.getDippingRecords(widget.cowId);
+        // Fetch Insemination records for the cow
+        final InseminationRecords = await _dbHelper.getInseminationRecords(widget.cowId);
 
-        // Find the most recent dipping date
-        if (dippingRecords.isNotEmpty) {
-          latestDippingDate = dippingRecords
+        // Find the most recent Insemination date
+        if (InseminationRecords.isNotEmpty) {
+          latestInseminationDate = InseminationRecords
               .map((record) => DateTime.parse(record['date']))
               .reduce((a, b) => a.isAfter(b) ? a : b)
               .toIso8601String()
@@ -91,11 +90,28 @@ class _CowDetailsPageState extends State<CowDetailsPage> {
           parent2 = familyTreeRecord['parent2'];
         }
 
+        final aliveVal = cow['alive'];
+        final isAliveBool = aliveVal == 1 || aliveVal == true;
+        String genderStr = widget.cowGender ?? 'Unknown';
+        if (cow['gender'] != null) {
+          genderStr = cow['gender'].toString();
+        } else if (cow['isFemale'] != null) {
+          final gf = cow['isFemale'];
+          if (gf == 1 || gf == true) {
+            genderStr = 'Female';
+          } else if (gf == 0 || gf == false) {
+            genderStr = 'Male';
+          }
+        }
+
         setState(() {
           _cowDetails = {
             ...cow,
+            'Gender': genderStr,
+            'Alive': isAliveBool ? 'Alive' : 'Deceased',
+            'ID': widget.cowId,
             'latestVaccinationDate': latestVaccinationDate,
-            'latestDippingDate': latestDippingDate,
+            'latestInseminationDate': latestInseminationDate,
             'totalMilkLiters': totalMilkLiters, // Add total milk liters
             'parent1': parent1,
             'parent2': parent2,
@@ -125,7 +141,7 @@ class _CowDetailsPageState extends State<CowDetailsPage> {
       barrierDismissible: false, // Prevent dismissing the dialog by tapping outside
       builder: (context) {
         return Dialog(
-          insetPadding: EdgeInsets.all(16.0), // Add padding to prevent overflow
+          insetPadding: const EdgeInsets.all(16.0), // Add padding to prevent overflow
           child: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -134,9 +150,9 @@ class _CowDetailsPageState extends State<CowDetailsPage> {
                 children: [
                   Text(
                     'Edit $field',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   TextField(
                     controller: _controller,
                     decoration: InputDecoration(
@@ -144,7 +160,7 @@ class _CowDetailsPageState extends State<CowDetailsPage> {
                       border: OutlineInputBorder(),
                     ),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -339,22 +355,10 @@ class _CowDetailsPageState extends State<CowDetailsPage> {
                   margin: const EdgeInsets.symmetric(vertical: 8.0),
                   child: ListTile(
                     title: Text(
-                      'Farm',
+                      'Gender',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    subtitle: Text(_cowDetails?['farm'] ?? widget.farm),
-                    onTap: widget.role == 1
-                        ? () {
-                            _showEditDialog(
-                              context,
-                              'Farm',
-                              _cowDetails?['farm'] ?? widget.farm,
-                              (newValue) async {
-                                await _dbHelper.updateCowFarm(widget.cowId, newValue);
-                              },
-                            );
-                          }
-                        : null, // Disable tap for non-role 1 users
+                    subtitle: Text(_cowDetails?['Gender'] ?? widget.cowGender ?? 'Unknown'),
                   ),
                 ),
                 Card(
@@ -386,21 +390,21 @@ class _CowDetailsPageState extends State<CowDetailsPage> {
                   margin: const EdgeInsets.symmetric(vertical: 8.0),
                   child: ListTile(
                     title: Text(
-                      'Last Dipped: ${_cowDetails?['latestDippingDate'] ?? 'No dipping history'}',
+                      'Last Inseminated: ${_cowDetails?['latestInseminationDate'] ?? 'No Insemination history'}',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    subtitle: Text('View dipping history'),
+                    subtitle: const Text('View Insemination history'),
                     onTap: () async {
                       await Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => DippingPage(
+                          builder: (context) => InseminationPage(
                             cowId: widget.cowId,
                             role: widget.role,
                           ),
                         ),
                       );
-                      // Refresh data when returning from the DippingPage
+                      // Refresh data when returning from the InseminationPage
                       _fetchCowDetails();
                     },
                   ),

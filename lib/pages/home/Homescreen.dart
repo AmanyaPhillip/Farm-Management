@@ -64,8 +64,7 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
         _filteredCows = _allCows.where((cow) {
           return cow.name.toLowerCase().contains(query) ||
                  cow.id.toLowerCase().contains(query) ||
-                 cow.breed.toLowerCase().contains(query) ||
-                 cow.farm.toLowerCase().contains(query);
+                 cow.breed.toLowerCase().contains(query) ;
         }).toList();
       }
     });
@@ -92,8 +91,8 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
         builder: (context) => CowDetailsPage(
           cowName: cow.name,
           cowId: cow.id,
-          farm: cow.farm,
           cowBreed: cow.breed,
+          cowGender: cow.gender,
           role: widget.role,
         ),
       ),
@@ -116,7 +115,7 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
           child: Row(
             children: [
               Container(
-                padding: EdgeInsets.all(12),
+                padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: cow.isAlive ? Colors.green[50] : Colors.red[50],
                   borderRadius: BorderRadius.circular(12),
@@ -127,7 +126,7 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
                   size: 28,
                 ),
               ),
-              SizedBox(width: 16),
+              const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,7 +139,7 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
                         color: Colors.grey[800],
                       ),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
                       'ID: ${cow.id}',
                       style: TextStyle(
@@ -149,21 +148,10 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    SizedBox(height: 2),
+                    const SizedBox(height: 2),
                     Row(
                       children: [
-                        Icon(Icons.location_on, size: 14, color: Colors.grey[500]),
-                        SizedBox(width: 4),
-                        Text(
-                          cow.farm,
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey[500],
-                          ),
-                        ),
-                        SizedBox(width: 16),
-                        Icon(Icons.category, size: 14, color: Colors.grey[500]),
-                        SizedBox(width: 4),
+                        const SizedBox(width: 4),
                         Text(
                           cow.breed,
                           style: TextStyle(
@@ -179,21 +167,21 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
               Column(
                 children: [
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
                       color: cow.isAlive ? Colors.green : Colors.red,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
                       cow.isAlive ? 'Alive' : 'Deceased',
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Icon(
                     Icons.arrow_forward_ios,
                     size: 16,
@@ -212,13 +200,19 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Cow Management'),
+        title: const Text(
+          'FarMan',
+          style: TextStyle(
+            fontSize: 30,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         backgroundColor: Colors.blue,
         elevation: 0,
         actions: [
           if (widget.role == 1)
             IconButton(
-              icon: Icon(Icons.add),
+              icon: const Icon(Icons.add),
               tooltip: 'Add Cow',
               onPressed: _navigateToAddCow,
             ),
@@ -229,7 +223,7 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
           // Search Section
           Container(
             padding: const EdgeInsets.all(16.0),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.blue,
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(24),
@@ -246,18 +240,18 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
                       BoxShadow(
                         color: Colors.black.withOpacity(0.1),
                         blurRadius: 8,
-                        offset: Offset(0, 2),
+                        offset: const Offset(0, 2),
                       ),
                     ],
                   ),
                   child: TextField(
                     controller: _searchController,
                     decoration: InputDecoration(
-                      hintText: 'Search by name, ID, breed, or farm...',
-                      prefixIcon: Icon(Icons.search, color: Colors.blue),
+                      hintText: 'Search by name, ID or breed...',
+                      prefixIcon: const Icon(Icons.search, color: Colors.blue),
                       suffixIcon: _searchController.text.isNotEmpty
                           ? IconButton(
-                              icon: Icon(Icons.clear, color: Colors.grey),
+                              icon: const Icon(Icons.clear, color: Colors.grey),
                               onPressed: _clearSearch,
                             )
                           : null,
@@ -267,17 +261,17 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
                       ),
                       filled: true,
                       fillColor: Colors.white,
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     ),
                   ),
                 ),
-                SizedBox(height: 12),
+                const SizedBox(height: 12),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       '${_filteredCows.length} cow${_filteredCows.length != 1 ? 's' : ''} found',
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.white70,
                         fontSize: 14,
                       ),
@@ -285,7 +279,7 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
                     if (_searchController.text.isNotEmpty)
                       Text(
                         'Searching: "${_searchController.text}"',
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 12,
                           fontStyle: FontStyle.italic,
@@ -299,13 +293,13 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
           // Content Section
           Expanded(
             child: _isLoading
-                ? Center(
-                    child: Column(
+                ? const Center(
+                    child: const Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        CircularProgressIndicator(color: Colors.blue),
-                        SizedBox(height: 16),
-                        Text('Loading cows...'),
+                        const CircularProgressIndicator(color: Colors.blue),
+                        const SizedBox(height: 16),
+                        const Text('Loading cows...'),
                       ],
                     ),
                   )
@@ -319,7 +313,7 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
                               size: 64,
                               color: Colors.grey[400],
                             ),
-                            SizedBox(height: 16),
+                            const SizedBox(height: 16),
                             Text(
                               _allCows.isEmpty 
                                   ? 'No cows added yet'
@@ -330,7 +324,7 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
-                            SizedBox(height: 8),
+                            const SizedBox(height: 8),
                             Text(
                               _allCows.isEmpty 
                                   ? 'Tap the + button to add your first cow'
@@ -346,7 +340,7 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
                     : RefreshIndicator(
                         onRefresh: _fetchCows,
                         child: ListView.builder(
-                          padding: EdgeInsets.symmetric(vertical: 8),
+                          padding: const EdgeInsets.symmetric(vertical: 8),
                           itemCount: _filteredCows.length,
                           itemBuilder: (context, index) {
                             return _buildCowCard(_filteredCows[index]);
@@ -358,16 +352,16 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+          const BottomNavigationBarItem(
+            icon: const Icon(Icons.home),
             label: 'Home',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.attach_money),
+          const BottomNavigationBarItem(
+            icon: const Icon(Icons.attach_money),
             label: 'Money',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.import_export),
+          const BottomNavigationBarItem(
+            icon: const Icon(Icons.import_export),
             label: 'Import/Export',
           ),
         ],
@@ -380,7 +374,7 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
           } else if (index == 1) {
             // Navigate to Money (not implemented)
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Money feature coming soon!')),
+              const SnackBar(content: const Text('Money feature coming soon!')),
             );
           } else if (index == 2) {
             Navigator.push(
