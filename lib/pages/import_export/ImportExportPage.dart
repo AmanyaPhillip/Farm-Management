@@ -30,10 +30,24 @@ class ImportExportPage extends StatelessWidget {
           // Clear existing inventory and insert new data
           await _dbHelper.clearInventory();
           for (var item in data) {
+            bool isFemale = false;
+            if (item.containsKey('isFemale')) {
+              final v = item['isFemale'];
+              isFemale = v == true || v == 1 || v == '1';
+            } else if (item.containsKey('gender')) {
+              final v = item['gender'];
+              if (v is String) {
+                isFemale = v.toLowerCase() == 'female';
+              } else if (v is int) {
+                isFemale = v == 1;
+              } else if (v is bool) {
+                isFemale = v;
+              }
+            }
             await _dbHelper.insertCowLegacy(
               item['cow_id'],
-              item['alive'] == 1, // Convert integer to boolean
-              item['isFemale'] == 1, // Convert integer to boolean
+              item['alive'] == 1 || item['alive'] == true, // Convert integer to boolean
+              isFemale,
               item['cow_name'],
               item['breed'] ?? item['additional_field'] ?? '', // Handle both field names
             );

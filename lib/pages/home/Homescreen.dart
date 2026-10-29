@@ -92,6 +92,7 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
           cowName: cow.name,
           cowId: cow.id,
           cowBreed: cow.breed,
+          cowGender: cow.gender,
           role: widget.role,
         ),
       ),

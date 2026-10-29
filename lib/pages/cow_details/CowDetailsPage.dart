@@ -9,12 +9,14 @@ class CowDetailsPage extends StatefulWidget {
   final String cowName;
   final String cowId;
   final String cowBreed;
+  final String cowGender;
   final int role; // Add role to check user permissions
 
   CowDetailsPage({
     required this.cowName,
     required this.cowId,
     required this.cowBreed,
+    required this.cowGender,
     required this.role,
   });
 
@@ -39,7 +41,6 @@ class _CowDetailsPageState extends State<CowDetailsPage> {
     try {
       final cows = await _dbHelper.getAllCows();
       final cow = cows.firstWhere((c) => c['cow_id'] == widget.cowId, orElse: () => {});
-
       String? latestVaccinationDate;
       String? latestInseminationDate;
       double totalMilkLiters = 0.0;
@@ -92,6 +93,9 @@ class _CowDetailsPageState extends State<CowDetailsPage> {
         setState(() {
           _cowDetails = {
             ...cow,
+            'Gender': cow['gender'],
+            'Alive': cow['isAlive'] ? 'Alive' : 'Deceased',
+            'ID': widget.cowId,
             'latestVaccinationDate': latestVaccinationDate,
             'latestInseminationDate': latestInseminationDate,
             'totalMilkLiters': totalMilkLiters, // Add total milk liters
@@ -330,6 +334,17 @@ class _CowDetailsPageState extends State<CowDetailsPage> {
                             );
                           }
                         : null, // Disable tap for non-role 1 users
+                  ),
+                ),
+                Card(
+                  elevation: 4,
+                  margin: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: ListTile(
+                    title: Text(
+                      'Gender',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Text(_cowDetails?['Gender'] ?? widget.cowGender ?? 'Unknown'),
                   ),
                 ),
                 Card(

@@ -10,8 +10,10 @@ class Cow {
     required this.isAlive,
     required this.name,
     required this.breed,
-    required this.isFemale
+    required this.isFemale,
   });
+
+  String get gender => isFemale ? 'Female' : 'Male';
 
   // Convert Cow object to Map for database insertion
   Map<String, dynamic> toMap() {
@@ -26,12 +28,23 @@ class Cow {
 
   // Create Cow object from Map (database retrieval)
   factory Cow.fromMap(Map<String, dynamic> map) {
+    bool female = false;
+    if (map.containsKey('isFemale')) {
+      female = (map['isFemale'] ?? 0) == 1;
+    } else if (map.containsKey('gender')) {
+      final g = map['gender'];
+      if (g is String) {
+        female = g.toLowerCase() == 'female';
+      } else if (g is int) {
+        female = g == 1;
+      }
+    }
     return Cow(
       id: map['cow_id'] ?? '',
       isAlive: (map['alive'] ?? 0) == 1,
       name: map['cow_name'] ?? '',
       breed: map['breed'] ?? '',
-      isFemale: (map['isFemale'] ?? 0) == 1,
+      isFemale: female,
     );
   }
 
@@ -41,6 +54,7 @@ class Cow {
     bool? isAlive,
     String? name,
     String? breed,
+    bool? isFemale,
   }) {
     return Cow(
       id: id ?? this.id,
@@ -53,7 +67,7 @@ class Cow {
 
   @override
   String toString() {
-    return 'Cow{id: $id, isAlive: $isAlive, name: $name, breed: $breed, isFemale: $isFemale}';
+    return 'Cow{id: $id, isAlive: $isAlive, name: $name, breed: $breed, Gender: $gender}';
   }
 
   @override
