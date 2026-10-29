@@ -225,9 +225,9 @@ class _MyHomeScreenState extends State<MyHomeScreen> {
             padding: const EdgeInsets.all(16.0),
             decoration: const BoxDecoration(
               color: Colors.blue,
-              borderRadius: const BorderRadius.only(
-                bottomLeft: const Radius.circular(24),
-                bottomRight: const Radius.circular(24),
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(24),
+                bottomRight: Radius.circular(24),
               ),
             ),
             child: Column(

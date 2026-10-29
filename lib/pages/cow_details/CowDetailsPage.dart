@@ -90,11 +90,25 @@ class _CowDetailsPageState extends State<CowDetailsPage> {
           parent2 = familyTreeRecord['parent2'];
         }
 
+        final aliveVal = cow['alive'];
+        final isAliveBool = aliveVal == 1 || aliveVal == true;
+        String genderStr = widget.cowGender ?? 'Unknown';
+        if (cow['gender'] != null) {
+          genderStr = cow['gender'].toString();
+        } else if (cow['isFemale'] != null) {
+          final gf = cow['isFemale'];
+          if (gf == 1 || gf == true) {
+            genderStr = 'Female';
+          } else if (gf == 0 || gf == false) {
+            genderStr = 'Male';
+          }
+        }
+
         setState(() {
           _cowDetails = {
             ...cow,
-            'Gender': cow['gender'],
-            'Alive': cow['isAlive'] ? 'Alive' : 'Deceased',
+            'Gender': genderStr,
+            'Alive': isAliveBool ? 'Alive' : 'Deceased',
             'ID': widget.cowId,
             'latestVaccinationDate': latestVaccinationDate,
             'latestInseminationDate': latestInseminationDate,
@@ -127,7 +141,7 @@ class _CowDetailsPageState extends State<CowDetailsPage> {
       barrierDismissible: false, // Prevent dismissing the dialog by tapping outside
       builder: (context) {
         return Dialog(
-          insetPadding: EdgeInsets.all(16.0), // Add padding to prevent overflow
+          insetPadding: const EdgeInsets.all(16.0), // Add padding to prevent overflow
           child: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -136,9 +150,9 @@ class _CowDetailsPageState extends State<CowDetailsPage> {
                 children: [
                   Text(
                     'Edit $field',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   TextField(
                     controller: _controller,
                     decoration: InputDecoration(
@@ -146,7 +160,7 @@ class _CowDetailsPageState extends State<CowDetailsPage> {
                       border: OutlineInputBorder(),
                     ),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
