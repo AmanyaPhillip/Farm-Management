@@ -11,12 +11,14 @@ class AddCowPage extends StatefulWidget {
 class _AddCowPageState extends State<AddCowPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _cowNameController = TextEditingController();
+  final TextEditingController _cowDoBController = TextEditingController();
   final TextEditingController _cowIdController =
     TextEditingController(text: 'MAF-');
   final TextEditingController _breedController =
     TextEditingController(text: 'Holstein Friesian');
   bool _isAlive = true; // Default value for "Alive"
   bool _isFemale = true; // Default value for "Female"
+  DateTime? _dob;
 
   String? _validateRequired(String? value, String fieldName) {
     if (value == null || value.trim().isEmpty) {
@@ -100,6 +102,51 @@ class _AddCowPageState extends State<AddCowPage> {
                         ),
                         validator: (value) => _validateRequired(value, 'Cow Name'),
                         textCapitalization: TextCapitalization.words,
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      Card(
+                        color: Colors.grey[50],
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  const Icon(Icons.date_range_rounded, color: Colors.orange),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    _dob == null
+                                        ? 'Date of Birth'
+                                        : 'DOB: ${_dob!.toIso8601String().split('T')[0]}',
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              TextButton(
+                                onPressed: () async {
+                                  final pickedDate = await showDatePicker(
+                                    context: context,
+                                    initialDate: _dob ?? DateTime.now(),
+                                    firstDate: DateTime(1980),
+                                    lastDate: DateTime.now(),
+                                  );
+                                  if (pickedDate != null) {
+                                    setState(() {
+                                      _dob = pickedDate;
+                                    });
+                                  }
+                                },
+                                child: const Text('Select'),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                       const SizedBox(height: 16),
                       TextFormField(
@@ -223,6 +270,7 @@ class _AddCowPageState extends State<AddCowPage> {
     _cowNameController.dispose();
     _breedController.dispose();
     _cowIdController.dispose();
+    _cowDoBController.dispose();
     super.dispose();
   }
 }
